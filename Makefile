@@ -34,7 +34,7 @@ hd10meg.img:
 	echo -e "1\nhd\nflat\n512\n10\nhd10meg.img\n" | bximage
 
 clean:
-	rm -rf *.o bootsect setup kernel.img hd10meg.img tools/build bochslog.txt
+	rm -rf *.o bootsect setup kernel.img tools/build bochslog.txt
 	cd kernel; make clean; cd ..
 
 run: all
