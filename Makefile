@@ -36,6 +36,7 @@ hd10meg.img:
 clean:
 	rm -rf *.o bootsect setup kernel.img tools/build bochslog.txt
 	cd kernel; make clean; cd ..
+	cd lib; make clean; cd ..
 
 run: all
 	bochs
