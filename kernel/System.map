@@ -40,7 +40,7 @@ Linker script and memory map
 
                 0x00000000                        . = 0x0
 
-.text           0x00000000     0x7d34
+.text           0x00000000     0x7de4
  *(.text)
  .text          0x00000000     0x64b0 head.o
                 0x00000000                startup_32
@@ -48,131 +48,131 @@ Linker script and memory map
                 0x00005000                tmp_floppy_area
                 0x000054b0                idt
                 0x00005cb0                gdt
- .text          0x000064b0       0xf6 main.o
+ .text          0x000064b0      0x10f main.o
                 0x000064b0                main
- .text          0x000065a6       0x23 sched.o
-                0x000065a6                sched_init
- .text          0x000065c9       0x52 printk.o
-                0x000065c9                printk
- .text          0x0000661b       0x47 sys_call.o
-                0x00006631                system_call
- .text          0x00006662      0x6fb vsprintf.o
-                0x00006939                vsprintf
- .text          0x00006d5d      0x50f traps.o
-                0x00006d87                do_double_fault
-                0x00006da7                do_general_protection
-                0x00006dc7                do_alignment_check
-                0x00006de7                do_divide_error
-                0x00006e07                do_int3
-                0x00006ea0                do_nmi
-                0x00006ec0                do_debug
-                0x00006ee0                do_overflow
-                0x00006f00                do_bounds
-                0x00006f20                do_invalid_op
-                0x00006f40                do_device_not_available
-                0x00006f60                do_coprocessor_segment_overrun
-                0x00006f80                do_segment_not_present
-                0x00006fa0                do_invalid_TSS
-                0x00006fc0                do_stack_segment
-                0x00006fe0                do_reserved
-                0x00007000                trap_init
- .text          0x0000726c       0xc7 asm.o
-                0x0000726c                divide_error
-                0x000072a1                debug
-                0x000072a8                nmi
-                0x000072af                int3
-                0x000072b6                overflow
-                0x000072bd                bounds
-                0x000072c4                invalid_op
-                0x000072cb                coprocessor_segment_overrun
-                0x000072d2                reserved
-                0x000072d9                double_fault
-                0x00007310                invalid_TSS
-                0x00007317                segment_not_present
-                0x0000731e                stack_segment
-                0x00007325                general_protection
-                0x0000732c                alignment_check
- .text          0x00007333       0x28 chr_drv/chr_drv.a(tty_io.o)
-                0x00007333                tty_init
-                0x00007340                tty_write
- .text          0x0000735b      0x575 chr_drv/chr_drv.a(console.o)
-                0x0000767d                con_init
-                0x00007798                console_print
- .text          0x000078d0       0x77 mm/mm.o
-                0x000078d0                mem_init
- .text          0x00007947      0x3ed ../lib/lib.a(string.o)
-                0x00007947                strcpy
-                0x00007963                strncpy
-                0x0000798a                strcat
-                0x000079b5                strncat
-                0x000079ea                strcmp
-                0x00007a11                strncmp
-                0x00007a3f                strchr
-                0x00007a6d                strrchr
-                0x00007a9d                strspn
-                0x00007ad8                strcspn
-                0x00007b13                strpbrk
-                0x00007b4e                strstr
-                0x00007b87                strlen
-                0x00007bb0                memcpy
-                0x00007bd0                memmove
-                0x00007c24                memcmp
-                0x00007c4e                memchr
-                0x00007c87                memset
-                0x00007cac                strtok
+ .text          0x000065bf       0xba sched.o
+                0x000065bf                sched_init
+ .text          0x00006679       0x52 printk.o
+                0x00006679                printk
+ .text          0x000066cb       0x47 sys_call.o
+                0x000066e1                system_call
+ .text          0x00006712      0x6fb vsprintf.o
+                0x000069e9                vsprintf
+ .text          0x00006e0d      0x50f traps.o
+                0x00006e37                do_double_fault
+                0x00006e57                do_general_protection
+                0x00006e77                do_alignment_check
+                0x00006e97                do_divide_error
+                0x00006eb7                do_int3
+                0x00006f50                do_nmi
+                0x00006f70                do_debug
+                0x00006f90                do_overflow
+                0x00006fb0                do_bounds
+                0x00006fd0                do_invalid_op
+                0x00006ff0                do_device_not_available
+                0x00007010                do_coprocessor_segment_overrun
+                0x00007030                do_segment_not_present
+                0x00007050                do_invalid_TSS
+                0x00007070                do_stack_segment
+                0x00007090                do_reserved
+                0x000070b0                trap_init
+ .text          0x0000731c       0xc7 asm.o
+                0x0000731c                divide_error
+                0x00007351                debug
+                0x00007358                nmi
+                0x0000735f                int3
+                0x00007366                overflow
+                0x0000736d                bounds
+                0x00007374                invalid_op
+                0x0000737b                coprocessor_segment_overrun
+                0x00007382                reserved
+                0x00007389                double_fault
+                0x000073c0                invalid_TSS
+                0x000073c7                segment_not_present
+                0x000073ce                stack_segment
+                0x000073d5                general_protection
+                0x000073dc                alignment_check
+ .text          0x000073e3       0x28 chr_drv/chr_drv.a(tty_io.o)
+                0x000073e3                tty_init
+                0x000073f0                tty_write
+ .text          0x0000740b      0x575 chr_drv/chr_drv.a(console.o)
+                0x0000772d                con_init
+                0x00007848                console_print
+ .text          0x00007980       0x77 mm/mm.o
+                0x00007980                mem_init
+ .text          0x000079f7      0x3ed ../lib/lib.a(string.o)
+                0x000079f7                strcpy
+                0x00007a13                strncpy
+                0x00007a3a                strcat
+                0x00007a65                strncat
+                0x00007a9a                strcmp
+                0x00007ac1                strncmp
+                0x00007aef                strchr
+                0x00007b1d                strrchr
+                0x00007b4d                strspn
+                0x00007b88                strcspn
+                0x00007bc3                strpbrk
+                0x00007bfe                strstr
+                0x00007c37                strlen
+                0x00007c60                memcpy
+                0x00007c80                memmove
+                0x00007cd4                memcmp
+                0x00007cfe                memchr
+                0x00007d37                memset
+                0x00007d5c                strtok
 
-.rodata         0x00007d34      0x2b9
- .rodata        0x00007d34       0x1e main.o
- *fill*         0x00007d52        0x2 
- .rodata        0x00007d54      0x118 vsprintf.o
- .rodata        0x00007e6c      0x17c traps.o
- .rodata        0x00007fe8        0x5 chr_drv/chr_drv.a(console.o)
+.rodata         0x00007de4      0x2b9
+ .rodata        0x00007de4       0x1e main.o
+ *fill*         0x00007e02        0x2 
+ .rodata        0x00007e04      0x118 vsprintf.o
+ .rodata        0x00007f1c      0x17c traps.o
+ .rodata        0x00008098        0x5 chr_drv/chr_drv.a(console.o)
 
-.eh_frame       0x00007ff0      0x968
- .eh_frame      0x00007ff0       0x44 main.o
- .eh_frame      0x00008034       0x34 sched.o
- .eh_frame      0x00008068       0x48 printk.o
- .eh_frame      0x000080b0       0xec vsprintf.o
- .eh_frame      0x0000819c      0x320 traps.o
- .eh_frame      0x000084bc       0x54 chr_drv/chr_drv.a(tty_io.o)
- .eh_frame      0x00008510      0x108 chr_drv/chr_drv.a(console.o)
- .eh_frame      0x00008618       0x30 mm/mm.o
- .eh_frame      0x00008648      0x310 ../lib/lib.a(string.o)
+.eh_frame       0x000080a0      0x984
+ .eh_frame      0x000080a0       0x44 main.o
+ .eh_frame      0x000080e4       0x50 sched.o
+ .eh_frame      0x00008134       0x48 printk.o
+ .eh_frame      0x0000817c       0xec vsprintf.o
+ .eh_frame      0x00008268      0x320 traps.o
+ .eh_frame      0x00008588       0x54 chr_drv/chr_drv.a(tty_io.o)
+ .eh_frame      0x000085dc      0x108 chr_drv/chr_drv.a(console.o)
+ .eh_frame      0x000086e4       0x30 mm/mm.o
+ .eh_frame      0x00008714      0x310 ../lib/lib.a(string.o)
 
-.data           0x00008958        0xc
- .data          0x00008958        0x0 head.o
- .data          0x00008958        0x0 main.o
- .data          0x00008958        0x8 sched.o
-                0x00008958                stack_start
- .data          0x00008960        0x0 printk.o
- .data          0x00008960        0x0 sys_call.o
- .data          0x00008960        0x0 vsprintf.o
- .data          0x00008960        0x0 traps.o
- .data          0x00008960        0x0 asm.o
- .data          0x00008960        0x0 chr_drv/chr_drv.a(tty_io.o)
- .data          0x00008960        0x4 chr_drv/chr_drv.a(console.o)
- .data          0x00008964        0x0 mm/mm.o
- .data          0x00008964        0x0 ../lib/lib.a(string.o)
+.data           0x00008a40     0x100c
+ .data          0x00008a40        0x0 head.o
+ .data          0x00008a40        0x0 main.o
+ .data          0x00008a40     0x1008 sched.o
+                0x00009a40                stack_start
+ .data          0x00009a48        0x0 printk.o
+ .data          0x00009a48        0x0 sys_call.o
+ .data          0x00009a48        0x0 vsprintf.o
+ .data          0x00009a48        0x0 traps.o
+ .data          0x00009a48        0x0 asm.o
+ .data          0x00009a48        0x0 chr_drv/chr_drv.a(tty_io.o)
+ .data          0x00009a48        0x4 chr_drv/chr_drv.a(console.o)
+ .data          0x00009a4c        0x0 mm/mm.o
+ .data          0x00009a4c        0x0 ../lib/lib.a(string.o)
 
-.bss            0x00008980     0x2384
- .bss           0x00008980        0x0 head.o
- .bss           0x00008980        0xc main.o
- *fill*         0x0000898c       0x14 
- .bss           0x000089a0     0x1000 sched.o
-                0x000089a0                user_stack
- .bss           0x000099a0      0x400 printk.o
- .bss           0x00009da0        0x0 sys_call.o
- .bss           0x00009da0        0x0 vsprintf.o
- .bss           0x00009da0        0x0 traps.o
- .bss           0x00009da0        0x0 asm.o
- .bss           0x00009da0        0x0 chr_drv/chr_drv.a(tty_io.o)
- .bss           0x00009da0       0x3c chr_drv/chr_drv.a(console.o)
- *fill*         0x00009ddc        0x4 
- .bss           0x00009de0      0xf20 mm/mm.o
-                0x00009de0                HIGH_MEMORY
-                0x00009e00                mem_map
- .bss           0x0000ad00        0x4 ../lib/lib.a(string.o)
-                0x0000ad00                ___strtok
+.bss            0x00009a60     0x2384
+ .bss           0x00009a60        0x0 head.o
+ .bss           0x00009a60        0xc main.o
+ *fill*         0x00009a6c       0x14 
+ .bss           0x00009a80     0x1000 sched.o
+                0x00009a80                user_stack
+ .bss           0x0000aa80      0x400 printk.o
+ .bss           0x0000ae80        0x0 sys_call.o
+ .bss           0x0000ae80        0x0 vsprintf.o
+ .bss           0x0000ae80        0x0 traps.o
+ .bss           0x0000ae80        0x0 asm.o
+ .bss           0x0000ae80        0x0 chr_drv/chr_drv.a(tty_io.o)
+ .bss           0x0000ae80       0x3c chr_drv/chr_drv.a(console.o)
+ *fill*         0x0000aebc        0x4 
+ .bss           0x0000aec0      0xf20 mm/mm.o
+                0x0000aec0                HIGH_MEMORY
+                0x0000aee0                mem_map
+ .bss           0x0000bde0        0x4 ../lib/lib.a(string.o)
+                0x0000bde0                ___strtok
 
 /DISCARD/
  *(.note.gnu.property)
