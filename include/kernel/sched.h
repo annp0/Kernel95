@@ -1,10 +1,24 @@
 #ifndef _SCHED_H
 #define _SCHED_H
 
+#define HZ 100
+
+#define NR_TASKS 64
+
+#define FIRST_TASK task[0]
+#define LAST_TASK task[NR_TASKS-1]
+
 #include <kernel/head.h>
 #include <kernel/mm.h>
 
 void sched_init();
+
+void test_a();
+void test_b();
+int create_second_process();
+
+extern struct task_struct *task[NR_TASKS];
+extern struct task_struct *current;
 
 struct tss_struct {
     long back_link;
@@ -61,6 +75,19 @@ struct task_struct{
 #define _LDT(n) ((((unsigned long)n) << 4) + (FIRST_LDT_ENTRY << 3))
 #define ltr(n) __asm__("ltr %%ax"::"a"(_TSS(n)))
 #define lldt(n) __asm__("lldt %%ax"::"a"(_LDT(n)))
+
+
+#define switch_to(n) {\
+    struct {long a,b;} __tmp; \
+    __asm__("cmpl %%ecx,current\n\t" \
+            "je 1f\n\t" \
+            "movw %%dx,%1\n\t" \
+            "xchgl %%ecx,current\n\t" \
+            "ljmp *%0\n\t" \
+            "1:" \
+            ::"m" (*&__tmp.a),"m" (*&__tmp.b), \
+            "d" (_TSS(n)),"c" ((long) task[n])); \
+}
 
 
 #endif

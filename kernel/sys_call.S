@@ -1,38 +1,75 @@
 .code32
 .text
-.global system_call
+.globl system_call, timer_interrupt
+
+EAX        = 0x00
+EBX        = 0x04
+ECX        = 0x08
+EDX        = 0x0C
+ORIG_EAX   = 0x10
+FS         = 0x14
+ES         = 0x18
+DS         = 0x1c
+EIP        = 0x20
+CS         = 0x24
+EFLAGS     = 0x28
+OLDESP     = 0x2c
+OLDSS      = 0x30
 
 int_msg:
-    .asciz "in kernel interrupt\n\r"
+    .asciz  "In kernel interrupt\n\r"
 
 system_call:
+    pushl %ds
+    pushl %es
+    pushl %fs
     pushl %eax
-    pushl %ecx
     pushl %edx
+    pushl %ecx
     pushl %ebx
-    pushl %esi
-    pushl %edi
-    pushw %ds
-    pushw %es
-    pushw %fs
+    movl  $0x10, %eax
+    movw  %ax, %ds
+    movw  %ax, %es
+    movw  %ax, %fs
 
-    movl $0x10, %eax
-    movw %ax, %ds
-    movw %ax, %es
-    movw %ax, %fs
-
+    /* call  _printk */
     pushl $int_msg
-    call printk
-    popl %eax
+    call  printk
+    addl $4, %esp
 
-    popw %fs
-    popw %es
-    popw %ds
-    popl %edi
-    popl %esi
-    popl %ebx
-    popl %edx
-    popl %ecx
+    pushl %eax
+
+ret_from_sys_call:
     popl %eax
+    popl %ebx
+    popl %ecx
+    popl %edx
+    addl $4, %esp
+    popl %fs
+    popl %es
+    popl %ds
     iret
 
+.align 4
+timer_interrupt:
+    pushl %ds
+    pushl %es
+    pushl %fs
+    pushl $-1
+    pushl %edx
+    pushl %ecx
+    pushl %ebx
+    pushl %eax
+    movl  $0x10, %eax
+    movw  %ax, %ds
+    movw  %ax, %es
+    movl  $0x17, %eax
+    movw  %ax, %fs
+    movb  $0x20, %al
+    outb  %al, $0x20
+    movl  CS(%esp), %eax
+    andl  $3, %eax
+    pushl %eax
+    call  do_timer
+    addl  $4, %esp
+    jmp   ret_from_sys_call

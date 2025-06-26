@@ -39,13 +39,7 @@ void main(void) {
 
     move_to_user_mode();
     
-    __asm__ __volatile__(
-            "int $0x80\n\r"
-            "movw $0x1b, %%ax\n\r"
-            "movw %%ax, %%gs\n\r"
-            "movl $0, %%edi\n\r"
-            "movw $0x0d43, %%gs:(%%edi)\n\r"
-            "loop:\n\r"
-            "jmp loop"
-            ::);
+    while (1) {
+        test_a();
+    }
 }
