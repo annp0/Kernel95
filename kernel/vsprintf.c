@@ -108,7 +108,6 @@ int vsprintf(char *buf, const char *fmt, va_list args) {
     int field_width;    /* width of output field */
     int precision;      /* min. # of digits for integers; max
                            number of chars for from string */
-    int qualifier;      /* 'h', 'l', or 'L' for integer fields */
 
     for (str = buf; *fmt; fmt++) {
         if (*fmt != '%') {
@@ -155,13 +154,6 @@ int vsprintf(char *buf, const char *fmt, va_list args) {
             if (precision < 0)
                 precision = 0;
         }
-
-        /* get the conversion qualifier */
-        qualifier = -1;
-        if (*fmt == 'h' || *fmt == 'l' || *fmt == 'L') {
-            qualifier = *fmt;
-            ++fmt;
-        } 
         
         switch (*fmt) {
             case 'c':

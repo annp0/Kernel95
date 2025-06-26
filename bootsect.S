@@ -201,7 +201,7 @@ sectors:
 
 msg:
 .byte 13, 10
-.ascii "Kernel is booting.."
+.ascii "kernel is booting  "
 .byte 13, 10
 .org 508
 root_dev:
