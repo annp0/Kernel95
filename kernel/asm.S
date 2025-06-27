@@ -1,7 +1,7 @@
 .code32
 .globl divide_error, debug, nmi, int3, overflow, bounds, invalid_op
 .globl double_fault, coprocessor_segment_overrun
-.globl invalid_TSS, segment_not_present, stack_segment, page_fault
+.globl invalid_TSS, segment_not_present, stack_segment
 .globl general_protection, coprocessor_error, reserved
 .globl alignment_check
 
@@ -116,10 +116,6 @@ segment_not_present:
 
 stack_segment:
     pushl $do_stack_segment
-    jmp   error_code
-
-page_fault:
-    pushl $do_page_fault
     jmp   error_code
 
 general_protection:

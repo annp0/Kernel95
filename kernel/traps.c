@@ -138,10 +138,6 @@ void do_stack_segment(long esp, long error_code) {
     die("stack segment", esp, error_code);
 }
 
-void do_page_fault(long esp, long error_code) {
-    die("page fault", esp, error_code);
-}
-
 void do_reserved(long esp, long error_code) {
     die("reserved (15,17-47) error",esp,error_code);
 }

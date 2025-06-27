@@ -72,6 +72,8 @@ struct tss_struct {
 
 struct task_struct {
     long state;
+    long counter;
+    long priority;
     long pid;
     struct task_struct *p_pptr;
     struct desc_struct ldt[3];
@@ -82,6 +84,8 @@ struct task_struct {
 {                   \
     0,              \
     0,              \
+    15,             \
+    15,             \
     &init_task.task,\
     {               \
         {0, 0},     \

@@ -4,6 +4,9 @@ unsigned long HIGH_MEMORY = 0;
 
 unsigned char mem_map [ PAGING_PAGES ] = {0,};
 
+#define copy_page(from,to) \
+__asm__("cld ; rep ; movsl"::"S" (from),"D" (to),"c" (1024):)
+
 void free_page(unsigned long addr) {
     if (addr < LOW_MEM) return;
     if (addr >= HIGH_MEMORY)
@@ -95,6 +98,33 @@ int copy_page_tables(unsigned long from,unsigned long to,long size) {
     }
     invalidate();
     return 0;
+}
+
+void un_wp_page(unsigned long * table_entry) {
+    unsigned long old_page,new_page;
+    old_page = 0xfffff000 & *table_entry;
+
+    if (old_page >= LOW_MEM && mem_map[MAP_NR(old_page)]==1) {
+        *table_entry |= 2;
+        invalidate();
+        return;
+    }
+
+    new_page=get_free_page();
+    if (old_page >= LOW_MEM)
+        mem_map[MAP_NR(old_page)]--;
+    copy_page(old_page,new_page);
+    *table_entry = new_page | 7;
+    invalidate();
+}
+
+void do_wp_page(unsigned long error_code, unsigned long address) {
+    if (address < TASK_SIZE)
+        printk("\n\rBAD! KERNEL MEMORY WP-ERR!\n\r");
+
+    un_wp_page((unsigned long *)
+            (((address>>10) & 0xffc) + (0xfffff000 &
+                *((unsigned long *) ((address>>20) &0xffc)))));
 }
 
 void mem_init(long start_mem, long end_mem) {

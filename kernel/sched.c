@@ -37,23 +37,84 @@ struct
 int clock = COUNTER;
 
 void do_timer(long cpl) {
-    if (clock >0 && clock <= COUNTER) {
-        clock--;
-    }
-    else if (clock == 0) {
-        schedule();
-    }
-    else {
-        clock = COUNTER;
-    }
+    if ((--current->counter)>0) return;
+    current->counter=0;
+    if (!cpl) return;
+    schedule();
 }
 
 void schedule() {
-    if (current == task[0] && task[1]) {
-        switch_to(1);
+    int i,next,c;
+    struct task_struct ** p;
+
+    while(1) {
+        c = -1;
+        next = 0;
+        i = NR_TASKS;
+        p = &task[NR_TASKS];
+
+        while (--i) {
+            if (!*--p)
+                continue;
+
+            if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
+                c = (*p)->counter, next = i;
+        }
+
+        if (c) break;
+        for(p = &LAST_TASK ; p > &FIRST_TASK ; --p) {
+            if (!(*p))
+                continue;
+
+            (*p)->counter = ((*p)->counter >> 1) + (*p)->priority;
+        }
     }
-    else if (current == task[1]) {
-        switch_to(0);
+    switch_to(next);
+}
+
+static inline void __sleep_on(struct task_struct** p, int state) {
+    struct task_struct* tmp;
+
+    if (!p)
+        return;
+    if (current == &(init_task.task))
+        panic("task[0] trying to sleep");
+
+    tmp = *p;
+    *p = current;
+    current->state = state;
+
+repeat:
+    schedule();
+
+    if (*p && *p != current) {
+        (**p).state = 0;
+        current->state = TASK_UNINTERRUPTIBLE;
+        goto repeat;
+    }
+
+    if (!*p)
+        printk("Warning: *P = NULL\n\r");
+    *p = tmp;
+    if (*p)
+        tmp->state = 0;
+}
+
+void interruptible_sleep_on(struct task_struct** p) {
+    __sleep_on(p, TASK_INTERRUPTIBLE);
+}
+
+void sleep_on(struct task_struct** p) {
+    __sleep_on(p, TASK_UNINTERRUPTIBLE);
+}
+
+void wake_up(struct task_struct **p) {
+    if (p && *p) {
+        if ((**p).state == TASK_STOPPED)
+            printk("wake_up: TASK_STOPPED");
+        if ((**p).state == TASK_ZOMBIE)
+            printk("wake_up: TASK_ZOMBIE");
+        (**p).state=0;
     }
 }
 
