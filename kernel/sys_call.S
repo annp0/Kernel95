@@ -1,6 +1,6 @@
 .code32
 .text
-.globl system_call, timer_interrupt
+.globl system_call, timer_interrupt, sys_fork
 
 EAX        = 0x00
 EBX        = 0x04
@@ -27,16 +27,13 @@ system_call:
     pushl %edx
     pushl %ecx
     pushl %ebx
-    movl  $0x10, %eax
-    movw  %ax, %ds
-    movw  %ax, %es
-    movw  %ax, %fs
+    movl  $0x10, %edx
+    movw  %dx, %ds
+    movw  %dx, %es
+    movl  $0x17, %edx
+    movw  %dx, %fs
 
-    /* call  _printk */
-    pushl $int_msg
-    call  printk
-    addl $4, %esp
-
+    call sys_call_table(, %eax, 4)
     pushl %eax
 
 ret_from_sys_call:
@@ -73,3 +70,18 @@ timer_interrupt:
     call  do_timer
     addl  $4, %esp
     jmp   ret_from_sys_call
+
+.align 4
+sys_fork:
+    call  find_empty_process
+    testl %eax, %eax
+    js    1f
+    pushl %gs
+    pushl %esi
+    pushl %edi
+    pushl %ebp
+    pushl %eax
+    call  copy_process
+    addl  $20, %esp
+1:  ret
+

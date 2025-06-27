@@ -3,7 +3,7 @@ USE_DEBUG :=
 CCFLAG := -I../include -nostdinc -ffreestanding -Wall -fomit-frame-pointer -fno-pic -fno-stack-protector -c -m32 $(USE_DEBUG)
 LDFLAG := -T ../link.ld -s --oformat binary -m elf_i386
 INCDIR := ../include
-OBJS   := head.o main.o sched.o fork.o printk.o sys_call.o vsprintf.o traps.o asm.o \
+OBJS   := head.o main.o sched.o fork.o printk.o sys_call.o vsprintf.o traps.o asm.o panic.o\
 	chr_drv/chr_drv.a ../mm/mm.o ../lib/lib.a 
 
 system: $(OBJS)
@@ -28,6 +28,9 @@ sched.o : sched.c
 	$(GCC) $(CCFLAG) -o $@ $<
 
 fork.o: fork.c
+	$(GCC) $(CCFLAG) -o $@ $<
+
+panic.o: panic.c
 	$(GCC) $(CCFLAG) -o $@ $<
 
 asm.o : asm.S

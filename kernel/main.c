@@ -5,6 +5,11 @@
 #include <kernel/sched.h>
 #include <kernel/trap.h>
 #include <asm/system.h>
+#include <unistd.h>
+
+static inline _syscall0(int, fork);
+
+int errno;
 
 extern void mem_init(long start, long end);
 
@@ -39,7 +44,9 @@ void main(void) {
 
     move_to_user_mode();
     
-    while (1) {
+    if (fork() == 0) {
+        test_b();
+    } else {
         test_a();
     }
 }

@@ -3,6 +3,26 @@
 #include <kernel/kernel.h>
 #include <asm/io.h>
 
+
+#define get_seg_byte(seg,addr) ({ \
+register char __res; \
+__asm__("push %%fs;mov %%ax,%%fs;movb %%fs:%2,%%al;pop %%fs" \
+ :"=a" (__res):"0" (seg),"m" (*(addr))); \
+__res;})
+
+#define get_seg_long(seg,addr) ({ \
+register unsigned long __res; \
+__asm__("push %%fs;mov %%ax,%%fs;movl %%fs:%2,%%eax;pop %%fs" \
+    :"=a" (__res):"0" (seg),"m" (*(addr))); \
+__res;})
+
+
+#define _fs() ({ \
+register unsigned short __res; \
+__asm__("mov %%fs,%%ax":"=a" (__res):); \
+__res;})
+
+
 void divide_error();
 void debug();
 void nmi();
@@ -15,15 +35,32 @@ void coprocessor_segment_overrun();
 void invalid_TSS();
 void segment_not_present();
 void stack_segment();
+void page_fault();
 void general_protection();
 void reserved();
 void irq13();
 void alignment_check();
 
 static void die(char* str, long esp_ptr, long nr) {
+    int i = 0;
     long* esp = (long*)esp_ptr;
 
-    printk("%s: %04x\n\r", str, 0xffff & nr);
+    printk("\n\r%s: %04x\n\r", str, nr & 0xffff);
+    printk("EIP:\t%04x:%p\n\rEFLAGS:\t%p\n\rESP:\t%04x:%p\n\r",
+            esp[1],esp[0],esp[2],esp[4],esp[3]);
+
+    printk("fs: %04x\n\r",_fs());
+    printk("base: %p, limit: %p\n\r",get_base(current->ldt[1]),get_limit(0x17));
+    if (esp[4] == 0x17) {
+        printk("Stack: ");
+        for (i=0;i<4;i++)
+            printk("%p ",get_seg_long(0x17,i+(long *)esp[3]));
+        printk("\n\r");
+    }
+
+    for(i=0;i<10;i++)
+        printk("%02x ",0xff & get_seg_byte(esp[1],(i+(char *)esp[0])));
+    printk("\n\r");
 
     while (1) {
     }
@@ -101,6 +138,10 @@ void do_stack_segment(long esp, long error_code) {
     die("stack segment", esp, error_code);
 }
 
+void do_page_fault(long esp, long error_code) {
+    die("page fault", esp, error_code);
+}
+
 void do_reserved(long esp, long error_code) {
     die("reserved (15,17-47) error",esp,error_code);
 }
@@ -121,6 +162,7 @@ void trap_init() {
     set_trap_gate(11, &segment_not_present);
     set_trap_gate(12, &stack_segment);
     set_trap_gate(13, &general_protection);
+    set_trap_gate(14, &page_fault);
     set_trap_gate(15,&reserved);
     set_trap_gate(17,&alignment_check);
 
