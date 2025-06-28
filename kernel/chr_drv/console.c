@@ -1,6 +1,7 @@
 #include <kernel/tty.h>
 #include <asm/io.h>
 #include <asm/system.h>
+#include <kernel/head.h>
 
 #define ORIG_X          (*(unsigned char *)0x90000)
 #define ORIG_Y          (*(unsigned char *)0x90001)
@@ -32,6 +33,8 @@ static unsigned long    pos;
 static unsigned long    x, y;
 static unsigned long    top, bottom;
 static unsigned long    attr = 0x07;
+
+extern void keyboard_interrupt(void);
 
 static inline void gotoxy(int new_x,unsigned int new_y) {
     if (new_x > video_num_columns || new_y >= video_num_lines)
@@ -129,6 +132,8 @@ static void del() {
 }
 
 void con_init() {
+    register unsigned char a;
+
     char * display_desc = "EGAc";
     char * display_ptr;
 
@@ -157,6 +162,12 @@ void con_init() {
 
     gotoxy(ORIG_X, ORIG_Y);
     set_cursor();
+
+    set_trap_gate(0x21,&keyboard_interrupt);
+    outb_p(inb_p(0x21)&0xfd,0x21);
+    a=inb_p(0x61);
+    outb_p(a|0x80,0x61);
+    outb_p(a,0x61);
 }
 
 void console_print(const char* buf, int nr) {
