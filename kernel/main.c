@@ -1,15 +1,16 @@
 #define __LIBRARY__
 
-#include <kernel/tty.h>
-#include <kernel/kernel.h>
-#include <kernel/sched.h>
-#include <kernel/trap.h>
-#include <asm/system.h>
 #include <unistd.h>
 
 static inline _syscall0(int, fork);
 
 int errno;
+
+#include <asm/system.h>
+
+#include <kernel/tty.h>
+#include <kernel/kernel.h>
+#include <kernel/sched.h>
 
 extern void mem_init(long start, long end);
 
@@ -35,7 +36,6 @@ void main(void) {
     mem_init(main_memory_start, memory_end);
 
     trap_init();
-
     sched_init();
 
     tty_init();
@@ -43,7 +43,6 @@ void main(void) {
     printk("\n\rmemory start: %d, end: %d\n\r", main_memory_start, memory_end);
 
     move_to_user_mode();
-    
     if (fork() == 0) {
         if (fork() == 0) {
             test_b();
@@ -55,3 +54,4 @@ void main(void) {
 
     while (1) {}
 }
+

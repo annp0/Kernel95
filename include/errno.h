@@ -8,7 +8,7 @@ extern int errno;
 #define ENOENT       2
 #define ESRCH        3
 #define EINTR        4
-#define EIO          5
+#define EIO      5
 #define ENXIO        6
 #define E2BIG        7
 #define ENOEXEC      8
@@ -49,3 +49,4 @@ extern int errno;
 #define ERESTARTNOINTR  513
 
 #endif
+

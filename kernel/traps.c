@@ -1,8 +1,7 @@
 #include <asm/system.h>
-#include <kernel/sched.h>
 #include <kernel/kernel.h>
+#include <kernel/sched.h>
 #include <asm/io.h>
-
 
 #define get_seg_byte(seg,addr) ({ \
 register char __res; \
@@ -168,3 +167,4 @@ void trap_init() {
     outb_p(inb_p(0x21)&0xfb,0x21);
     outb(inb_p(0xA1)&0xdf,0xA1);
 }
+

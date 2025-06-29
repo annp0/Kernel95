@@ -25,3 +25,4 @@ __asm__("std ; repne ; scasb\n\t"
         goto repeat;
     return __res;
 }
+

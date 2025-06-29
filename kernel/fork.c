@@ -3,7 +3,6 @@
 #include <asm/system.h>
 #include <kernel/sched.h>
 #include <string.h>
-#include <kernel/sys.h>
 
 long last_pid = 0;
 
@@ -99,3 +98,4 @@ repeat:
 
     return -EAGAIN;
 }
+

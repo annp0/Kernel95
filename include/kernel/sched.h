@@ -33,6 +33,7 @@
 extern int copy_page_tables(unsigned long from, unsigned long to, long size);
 extern int free_page_tables(unsigned long from, unsigned long size);
 
+extern void trap_init();
 extern void sched_init();
 extern void schedule();
 extern void panic(const char* s);
@@ -75,7 +76,7 @@ struct task_struct {
     long counter;
     long priority;
     long pid;
-    struct task_struct *p_pptr;
+    struct task_struct      *p_pptr;
     struct desc_struct ldt[3];
     struct tss_struct tss;
 };
@@ -83,9 +84,9 @@ struct task_struct {
 #define INIT_TASK \
 {                   \
     0,              \
+    15,             \
+    15,             \
     0,              \
-    15,             \
-    15,             \
     &init_task.task,\
     {               \
         {0, 0},     \

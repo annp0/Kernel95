@@ -1,11 +1,11 @@
+#include <kernel/sched.h>
 #include <kernel/tty.h>
+
 #include <asm/io.h>
 #include <asm/system.h>
-#include <kernel/head.h>
 
 #define ORIG_X          (*(unsigned char *)0x90000)
 #define ORIG_Y          (*(unsigned char *)0x90001)
-
 #define ORIG_VIDEO_PAGE     (*(unsigned short *)0x90004)
 #define ORIG_VIDEO_MODE     ((*(unsigned short *)0x90006) & 0xff)
 #define ORIG_VIDEO_COLS     (((*(unsigned short *)0x90006) & 0xff00) >> 8)
@@ -14,7 +14,12 @@
 #define ORIG_VIDEO_EGA_BX   (*(unsigned short *)0x9000a)
 #define ORIG_VIDEO_EGA_CX   (*(unsigned short *)0x9000c)
 
+#define VIDEO_TYPE_MDA      0x10    /* Monochrome Text Display  */
+#define VIDEO_TYPE_CGA      0x11    /* CGA Display          */
+#define VIDEO_TYPE_EGAM     0x20    /* EGA/VGA in Monochrome Mode   */
 #define VIDEO_TYPE_EGAC     0x21    /* EGA/VGA in Color Mode    */
+
+extern void keyboard_interrupt(void);
 
 static unsigned char    video_type;     /* Type of display being used   */
 static unsigned long    video_num_columns;  /* Number of text columns   */
@@ -34,7 +39,6 @@ static unsigned long    x, y;
 static unsigned long    top, bottom;
 static unsigned long    attr = 0x07;
 
-extern void keyboard_interrupt(void);
 
 static inline void gotoxy(int new_x,unsigned int new_y) {
     if (new_x > video_num_columns || new_y >= video_num_lines)
@@ -53,7 +57,6 @@ static inline void set_origin() {
     outb_p(0xff & ((origin - video_mem_base) >> 1), video_port_val);
     sti();
 }
-
 
 static inline void set_cursor() {
     cli();
@@ -134,24 +137,51 @@ static void del() {
 void con_init() {
     register unsigned char a;
 
-    char * display_desc = "EGAc";
+    char * display_desc = "????";
     char * display_ptr;
 
     video_num_columns = ORIG_VIDEO_COLS;
     video_size_row = video_num_columns * 2;
     video_num_lines = ORIG_VIDEO_LINES;
     video_page = ORIG_VIDEO_PAGE;
+    video_erase_char = 0x0720;
 
-    video_mem_base = 0xb8000;
-    video_port_reg  = 0x3d4;
-    video_port_val  = 0x3d5;
+    /* Is this a monochrome display? */
+    if (ORIG_VIDEO_MODE == 7) {
+        video_mem_base = 0xb0000;
+        video_port_reg = 0x3b4;
+        video_port_val = 0x3b5;
+        if ((ORIG_VIDEO_EGA_BX & 0xff) != 0x10) {
+            video_type = VIDEO_TYPE_EGAM;
+            video_mem_term = 0xb8000;
+            display_desc = "EGAm";
+        }
+        else {
+            video_type = VIDEO_TYPE_MDA;
+            video_mem_term = 0xb2000;
+            display_desc = "*MDA";
+        }
+    }
+    else { /* color display */
+        video_mem_base = 0xb8000;
+        video_port_reg  = 0x3d4;
+        video_port_val  = 0x3d5;
 
-    video_type = VIDEO_TYPE_EGAC;
-    video_mem_term = 0xc0000;
+        if ((ORIG_VIDEO_EGA_BX & 0xff) != 0x10) {
+            video_type = VIDEO_TYPE_EGAC;
+            video_mem_term = 0xc0000;
+            display_desc = "EGAc";
+        }
+        else {
+            video_type = VIDEO_TYPE_CGA;
+            video_mem_term = 0xba000;
+            display_desc = "*CGA";
+        }
+    }
 
     display_ptr = ((char *)video_mem_base) + video_size_row - 8;
     while (*display_desc) {
-        *(display_ptr++) = *(display_desc++);
+        *display_ptr++ = *display_desc++;
         display_ptr++;
     }
 
@@ -255,3 +285,4 @@ void con_print(const char* buf, int nr) {
     gotoxy(x, y);
     set_cursor();
 }
+

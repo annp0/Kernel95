@@ -367,3 +367,4 @@ __asm__("testl %1,%1\n\t"
     :"ax","cx","dx","di");
 return __res;
 }
+

@@ -1,16 +1,14 @@
-#include <kernel/sched.h>
-#include <asm/system.h>
-#include <kernel/head.h>
 #include <errno.h>
-#include <string.h>
-#include <kernel/kernel.h>
-#include <asm/io.h>
-#include <kernel/fork.h>
+#include <kernel/sched.h>
+#include <kernel/sys.h>
 
+#include <asm/system.h>
+#include <asm/io.h>
+ 
 #define COUNTER 100
 
-#define PAGE_SIZE 4096
 #define LATCH (1193180/HZ)
+#define PAGE_SIZE 4096
 
 extern int system_call();
 extern void timer_interrupt();
@@ -35,13 +33,6 @@ struct
 
 
 int clock = COUNTER;
-
-void do_timer(long cpl) {
-    if ((--current->counter)>0) return;
-    current->counter=0;
-    if (!cpl) return;
-    schedule();
-}
 
 void schedule() {
     int i,next,c;
@@ -118,6 +109,13 @@ void wake_up(struct task_struct **p) {
     }
 }
 
+void do_timer(long cpl) {
+    if ((--current->counter)>0) return;
+    current->counter=0;
+    if (!cpl) return;
+    schedule();
+}
+
 void sched_init() {
     int i;
     struct desc_struct * p;
@@ -161,10 +159,10 @@ __asm__("movl $0x0, %edi\n\r"
 }
 
 void test_b(void) {
-__asm__("movl $0x30, %edi\n\r"
+__asm__("movl $0x0, %edi\n\r"
         "movw $0x1b, %ax\n\t"
         "movw %ax, %gs \n\t"
-        "movb $0x0c, %ah\n\r"
+        "movb $0x0f, %ah\n\r"
         "movb $'B', %al\n\r"
         "loopb:\n\r"
         "movw %ax, %gs:(%edi)\n\r"

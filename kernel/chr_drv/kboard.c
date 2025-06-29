@@ -1,7 +1,7 @@
 #include <kernel/sched.h>
+#include <kernel/tty.h>
 #include <asm/system.h>
 #include <asm/io.h>
-#include <kernel/tty.h>
 
 typedef void (*key_fn)();
 void do_self();

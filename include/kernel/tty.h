@@ -22,11 +22,12 @@ char EMPTY(struct tty_queue* q);
 extern struct tty_queue read_q;
 extern struct tty_queue write_q;
 
-void con_write();
 void con_init();
 void tty_init();
-void tty_write(unsigned channel, char* buf, int nr);
+
+void con_write();
 void con_print(const char* buf, int nr);
 void do_tty_interrupt();
 
 #endif
+

@@ -1,4 +1,6 @@
 #include <stdarg.h>
+#include <stddef.h>
+#include <kernel/kernel.h>
 
 static char buf[1024];
 
@@ -26,3 +28,4 @@ int printk(const char* fmt, ...) {
 
     return i;
 }
+

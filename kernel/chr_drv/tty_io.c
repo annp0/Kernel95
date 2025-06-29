@@ -59,3 +59,4 @@ void copy_to_cooked() {
 void do_tty_interrupt() {
     copy_to_cooked();
 }
+

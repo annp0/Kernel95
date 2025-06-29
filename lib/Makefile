@@ -1,5 +1,5 @@
 AR  := ar
-LD  := ld -T ../link.ld
+LD  := ld
 GCC := gcc
 CCFLAG := -m32 -I../include -nostdinc -ffreestanding -fno-pic -Wall -fomit-frame-pointer -fno-stack-protector -c
 OBJS   := string.o
@@ -12,5 +12,6 @@ string.o : string.c
 	$(GCC) $(CCFLAG) -o $@ $<
 
 clean : 
-	-rm *.o
-	-rm lib.a
+	rm -f *.o
+	rm -f lib.a
+
