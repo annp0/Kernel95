@@ -3,6 +3,8 @@
 #include <asm/system.h>
 #include <asm/io.h>
 
+extern struct tty_struct tty_table[1];
+
 typedef void (*key_fn)();
 void do_self();
 void ctrl();
@@ -146,7 +148,7 @@ void keyboard_handler(void) {
             func();
     }
 
-    do_tty_interrupt();
+    do_tty_interrupt(0);
 }
 
 void do_self() {
@@ -166,7 +168,7 @@ void do_self() {
             c -= 0x40;
     }
 
-    PUTCH(c, &read_q);
+    PUTCH(c, &tty_table[0].read_q);
 }
 
 void lshift() {
@@ -253,15 +255,15 @@ void cursor() {
     if (e0 || (leds & 0x2)) {
         c = cur_table[scan_code];
         if (c < '9') {
-            PUTCH('~', &read_q);
+            PUTCH('~', &tty_table[0].read_q);
         }
-        PUTCH(0x1b, &read_q);
-        PUTCH(0x5b, &read_q);
+        PUTCH(0x1b, &tty_table[0].read_q);
+        PUTCH(0x5b, &tty_table[0].read_q);
     }
     else {
         c = num_table[scan_code];
     }
-    PUTCH(c, &read_q);
+    PUTCH(c, &tty_table[0].read_q);
 }
 
 void func() {
@@ -272,15 +274,15 @@ void func() {
     if (scan_code < 0 || scan_code > 11) {
         return;
     }
-    PUTCH(0x1b, &read_q);
-    PUTCH(0x5b, &read_q);
-    PUTCH(0x5b, &read_q);
-    PUTCH('A' + scan_code, &read_q);
+    PUTCH(0x1b, &tty_table[0].read_q);
+    PUTCH(0x5b, &tty_table[0].read_q);
+    PUTCH(0x5b, &tty_table[0].read_q);
+    PUTCH('A' + scan_code, &tty_table[0].read_q);
 }
 
 void minus() {
     if (e0 == 1) {
-        PUTCH('/', &read_q);
+        PUTCH('/', &tty_table[0].read_q);
         return;
     }
     do_self();

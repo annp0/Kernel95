@@ -100,8 +100,12 @@ struct task_struct {
     },              \
 }
 
+extern void sleep_on(struct task_struct ** p);
+extern void interruptible_sleep_on(struct task_struct ** p);
+extern void wake_up(struct task_struct ** p);
+
 /*
- * In linux is 4, because we add video selector,
+ * In kernel is 4, because we add video selector,
  * so, it is 5 here.
  * */
 #define FIRST_TSS_ENTRY 5

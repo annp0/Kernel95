@@ -1,10 +1,27 @@
 #include <errno.h>
+#include <string.h>
 
 #include <asm/system.h>
 #include <kernel/sched.h>
-#include <string.h>
+#include <kernel/kernel.h>
+
+extern void write_verify(unsigned long address);
 
 long last_pid = 0;
+
+void verify_area(void * addr,int size) {
+	unsigned long start;
+
+	start = (unsigned long) addr;
+	size += start & 0xfff;
+	start &= 0xfffff000;
+	start += get_base(current->ldt[2]);
+	while (size>0) {
+		size -= 4096;
+		write_verify(start);
+		start += 4096;
+	}
+}
 
 int copy_mem(int nr, struct task_struct* p) {
     unsigned long old_data_base,new_data_base,data_limit;

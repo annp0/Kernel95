@@ -2,7 +2,7 @@ AR  := ar
 LD  := ld
 GCC := gcc
 CCFLAG := -m32 -I../../include -nostdinc -ffreestanding -fno-pic -Wall -fomit-frame-pointer -fno-stack-protector -c
-OBJS   := tty_io.o console.o keyboard.o kboard.o
+OBJS   := tty_io.o console.o keyboard.o kboard.o tty_ioctl.o
 
 tty_io.o : tty_io.c
 	$(GCC) $(CCFLAG) -o $@ $<
@@ -14,6 +14,9 @@ keyboard.o : keyboard.S
 	$(GCC) -m32 -traditional -c -o $@ $<
 
 kboard.o : kboard.c
+	$(GCC) $(CCFLAG) -o $@ $<
+
+tty_ioctl.o : tty_ioctl.c
 	$(GCC) $(CCFLAG) -o $@ $<
 
 chr_drv.a : $(OBJS)

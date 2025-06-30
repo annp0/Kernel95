@@ -1,8 +1,8 @@
 //extern int sys_setup();
 //extern int sys_exit();
 extern int sys_fork();
-//extern int sys_read();
-//extern int sys_write();
+extern int sys_read();
+extern int sys_write();
 //extern int sys_open();
 //extern int sys_close();
 //extern int sys_waitpid();
@@ -52,7 +52,7 @@ extern int sys_fork();
 //extern int sys_acct();
 //extern int sys_phys();
 //extern int sys_lock();
-//extern int sys_ioctl();
+extern int sys_ioctl();
 //extern int sys_fcntl();
 //extern int sys_mpx();
 //extern int sys_setpgid();
@@ -90,9 +90,8 @@ fn_ptr sys_call_table[] = {
     0, //    sys_setup
     0, //    sys_exit
     sys_fork,
-    0, //    sys_read,
-
-    0, //    sys_write,
+    sys_read,
+    sys_write,
     0, //    sys_open,
     0, //    sys_close,
     0, //    sys_waitpid,
@@ -150,7 +149,7 @@ fn_ptr sys_call_table[] = {
     0, //    sys_phys,
 
     0, //    sys_lock,
-    0, //    sys_ioctl,
+    sys_ioctl,
     0, //    sys_fcntl,
     0, //    sys_mpx,
     0, //    sys_setpgid,

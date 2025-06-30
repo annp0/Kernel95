@@ -4,6 +4,8 @@
 
 #include <asm/system.h>
 #include <asm/io.h>
+
+#include <unistd.h>
  
 #define COUNTER 100
 
@@ -148,6 +150,12 @@ void sched_init() {
 }
 
 void test_a(void) {
+    char b;
+    int n = 0;
+    while ((n = read(0, &b, 1)) > 0) {
+        write(1, &b, n);
+    }
+
 __asm__("movl $0x0, %edi\n\r"
         "movw $0x1b, %ax\n\t"
         "movw %ax, %gs \n\t"

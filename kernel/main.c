@@ -1,8 +1,9 @@
 #define __LIBRARY__
 
 #include <unistd.h>
+#include <termios.h>
 
-static inline _syscall0(int, fork);
+inline _syscall0(int, fork);
 
 int errno;
 
@@ -11,6 +12,7 @@ int errno;
 #include <kernel/tty.h>
 #include <kernel/kernel.h>
 #include <kernel/sched.h>
+
 
 extern void mem_init(long start, long end);
 
@@ -43,6 +45,14 @@ void main(void) {
     printk("\n\rmemory start: %d, end: %d\n\r", main_memory_start, memory_end);
 
     move_to_user_mode();
+    printf("\x1b[31m In user mode!\n\r\x1b[0m");
+
+    struct termios tms;
+    ioctl(0, TCGETS, (unsigned long)&tms);
+    tms.c_lflag &= (~ICANON);
+    tms.c_lflag &= (~ECHO);
+    ioctl(0, TCSETS, (unsigned long)&tms);
+
     if (fork() == 0) {
         if (fork() == 0) {
             test_b();

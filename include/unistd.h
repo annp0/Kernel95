@@ -1,6 +1,8 @@
 #ifndef _UNISTD_H
 #define _UNISTD_H
 
+#include <sys/stat.h>
+
 #ifndef NULL
 #define NULL ((void*)0)
 #endif
@@ -107,11 +109,28 @@ __asm__ volatile("int $0x80\n\r"\
     return -1;                  \
 }
 
+#define _syscall3(type,name,atype,a,btype,b,ctype,c) \
+type name(atype a, btype b, ctype c) {                   \
+    long __res;                 \
+__asm__ volatile("int $0x80\n\r"\
+        : "=a"(__res)           \
+        : "a"(__NR_##name), "b"((long)a), "c"((long)b), "d"((long)c));     \
+    if (__res >= 0)             \
+        return (type)__res;     \
+    errno = -__res;             \
+    return -1;                  \
+}
+
 #endif /* __LIBRARY__ */
 
 extern int errno;
 
-static int fork();
+int fork();
+int read(int fildes, const char * buf, off_t count);
+int write(int fildes, const char * buf, off_t count);
+int ioctl(unsigned int fd, unsigned int cmd, unsigned long arg);
+
+int printf(const char* fmt, ...);
 
 #endif
 
