@@ -606,7 +606,7 @@ void con_write(struct tty_struct* tty) {
                     csi_at(par[0]);
                     break;
                 case 'm':
-                    csi_m(par[0]);
+                    csi_m();
                     break;
                 case 'r':
                     if (par[0]) par[0]--;
