@@ -5,7 +5,7 @@ Kernel98 is a small educational 32-bit operating system kernel, featuring:
 * Copy-on-Write for `fork()`: When a process is forked, only the `task_struct` is duplicated initially. All other memory pages are shared between parent and child using Copy-on-Write (CoW). Physical pages are only copied when either process writes to them.
 * Shared pages for `execv()`: When multiple processes execute the same binary, code pages are shared between them to reduce memory usage.
 * Demand paging: Pages are only allocated from, or loaded into physical memory (depending on if the address is mapped to disk or not) when they are actually accessed. 
-* Buffer cache for block devices: To speed up disk IO, all reads/writes are cached using reference-counted buffers. Each buffer has flags indicating whether it is up-to-date or dirty. Dirty buffers must be flushed to disk before reuse. Buffers are protected using mutexes to ensure safe concurrent access.
+* Buffer cache for block devices: To speed up disk IO, all reads/writes are cached using reference-counted buffers. Among the buffer caches, we maintain two kinds of double linked lists: the first connects all buffers to maintain a Least Recently Used (LRU) cache, and the second connects buffers with the same hash to resolve collisions. Each buffer has flags indicating whether it is up-to-date or dirty. Dirty buffers must be flushed to disk before reuse. Buffers are protected using mutexes to ensure safe concurrent access.
 * Character device support with ring buffers and separate read/write queues.
 * Support for Minix file system.
 
