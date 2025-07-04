@@ -6,6 +6,8 @@ Kernel98 is a small educational 32-bit operating system kernel, featuring:
 * Shared pages for `execv()`: When multiple processes execute the same binary, code pages are shared between them to reduce memory usage.
 * Demand paging: Pages are only allocated from, or loaded into physical memory (depending on if the address is mapped to disk or not) when they are actually accessed. 
 * Buffer cache for block devices: To speed up disk IO, all reads/writes are cached using reference-counted buffers. Each buffer has flags indicating whether it is up-to-date or dirty. Dirty buffers must be flushed to disk before reuse. Buffers are protected using mutexes to ensure safe concurrent access.
+* Character device support with ring buffers and separate read/write queues.
+* Support for Minix file system.
 
 To build the kernel, run `make`. You can run it with Bochs.
 
